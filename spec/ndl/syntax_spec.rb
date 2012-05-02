@@ -23,6 +23,7 @@ describe do
   include NDL::Syntax
 
   example { Statement.parse('say "ふー"').should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], {})  }
+  example { Statement.parse('say feeling: smile "ふー"').should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], { :feeling => :smile })  }
   example { Statement.parse(' say "ふー"').should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], {})  }
   example { Statement.parse('say "ふー" "ばー"').should == Tokens::Command.new(:say, [Tokens::String.new("ふー"), Tokens::String.new("ばー")], {})  }
   example { Statement.parse('(say "ふー")').should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], {}) }

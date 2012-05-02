@@ -13,7 +13,11 @@ module Parsers
       apply(OptionalFlag, proc { OptionalFlags }) { |a, as| [a, *as] },
       OptionalFlag,
       apply { [] } )
-  KeywordArgument = apply Identifier, '=', proc { Expression }, &:join
+  Option = apply(Identifier, SkipSpaces, ':', SkipSpaces, Identifier) { |key, _ss1, _col, _ss2, val| [key.to_s.to_sym, val.to_s.to_sym] }
+  Options = one_of(
+    apply(Option, proc { Options }) { |a, as| [a, *as] },
+    Option,
+    apply { [] })
   StringLiteral = between('"', '"', /(?:(?:\\\")|[^"])*/) { |str| Tokens::String.new str.to_s }
   PathLiteral = between('<', '>', /(?:(?:\\\")|[^\>])*/) { |path| Tokens::Path.new path.to_s }
   DocumentLiteral = between(/\{\s*/, '}', many( proc { Statement } )) { |stats| Tokens::Document.new(stats) }
@@ -21,9 +25,9 @@ module Parsers
   RequiredArguments = one_of(
       apply(RequiredArgument, SkipSpaces, proc { RequiredArguments }) { |a, _ss, as| a + as },
       RequiredArgument )
-  Command = apply(Identifier, SkipSpaces, OptionalFlags, SkipSpaces, RequiredArguments) {
-    |cmd, _ss1, opts, _ss2, args|
-    Tokens::Command.new cmd.to_s.to_sym, args, Hash[*opts.flatten]
+  Command = apply(Identifier, SkipSpaces, OptionalFlags, SkipSpaces, Options, SkipSpaces, RequiredArguments) {
+    |cmd, _ss1, optflgs, _ss2, opts, _ss3, args|
+    Tokens::Command.new cmd.to_s.to_sym, args, Hash[*(optflgs + opts).flatten]
   }
   SubjectCommand = try apply(Identifier, SkipSpaces, Command) { |sbj, _ss, cmd| Tokens::Subject.new sbj.to_s.to_sym, cmd }
   Assign = try apply(Identifier, SkipSpaces, '=', SkipSpaces, proc { Expression }) {

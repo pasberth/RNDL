@@ -15,6 +15,11 @@ module NDL
         if subject.options[:replace_all]
           subject.options[:replace_all].each { |pat, rep| text.gsub! pat.as_text, rep.as_text }
         end
+        
+        # say feeling: smile -> { :feeling => :smile }
+        if options[:feeling]
+        end
+
         text
       end
       

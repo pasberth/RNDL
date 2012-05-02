@@ -15,12 +15,11 @@ module NDL
     
     private
       def build_token token
-        return true if token == true
         case token
         when Tokens::Command
           if Functions.ndl_functions.key? token.cmd
             f = Functions.ndl_functions[token.cmd].new(*token.args.map(&:build_token.in(self)))
-            f.options = Hash[*token.opts.map { |k, v| [k, build_token(v)] }.flatten]
+            f.options = token.opts.clone
             f
           else
             raise "unknown command '#{token.cmd}'"
