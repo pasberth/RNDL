@@ -28,7 +28,7 @@ module Parsers
       Command,
       StringLiteral,
       PathLiteral,
-      apply('(', proc { Expression }, ')') { |sb, res, eb| res }
+      between('(', ')', proc { Expression})
   )
   Statement = apply(Expression, /\n|.|$/) { |e, _e| e }
   NDLParser = RegParsec::Regparser.new(Statement)
