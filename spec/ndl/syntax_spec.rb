@@ -23,12 +23,17 @@ describe do
   include NDL::Syntax
 
   example { Statement.parse('say "ふー"').should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], {})  }
+  example { Statement.parse(' say "ふー"').should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], {})  }
   example { Statement.parse('say "ふー" "ばー"').should == Tokens::Command.new(:say, [Tokens::String.new("ふー"), Tokens::String.new("ばー")], {})  }
   example { Statement.parse('(say "ふー")').should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], {}) }
-  example { Statement.parse('say "ふー"\nthink "ばー"').should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], {})  }
+  example { Statement.parse(%!say "ふー"\nthink "ばー"!).should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], {})  }
   example { Statement.parse('say (say "ふー")').should == Tokens::Command.new(:say, [Tokens::Command.new(:say, [Tokens::String.new("ふー")], {})], {}) }
-  example { Statement.parse('"ふー"').should == Tokens::String.new("ふー") }
   example { Statement.parse('<ふー/ばー>').should == Tokens::Path.new("ふー/ばー") }
+  example { Statement.parse(%!{\nsay "ふー"\nthink "ばー"\n}!).should == Tokens::Document.new([Tokens::Command.new(:say, [Tokens::String.new("ふー")], {}), Tokens::Command.new(:think, [Tokens::String.new("ばー")], {})]) }
+  example { Statement.parse(%!{say "ふー"\nthink "ばー"\n}!).should == Tokens::Document.new([Tokens::Command.new(:say, [Tokens::String.new("ふー")], {}), Tokens::Command.new(:think, [Tokens::String.new("ばー")], {})]) }
+  example { Statement.parse(%!{say "ふー"\nthink "ばー"}!).should == Tokens::Document.new([Tokens::Command.new(:say, [Tokens::String.new("ふー")], {}), Tokens::Command.new(:think, [Tokens::String.new("ばー")], {})]) }
+  example { Statement.parse(%!{ say "ふー"\nthink "ばー" }!).should == Tokens::Document.new([Tokens::Command.new(:say, [Tokens::String.new("ふー")], {}), Tokens::Command.new(:think, [Tokens::String.new("ばー")], {})]) }
+  example { Statement.parse(%!{\n say "ふー"\nthink "ばー" \n}!).should == Tokens::Document.new([Tokens::Command.new(:say, [Tokens::String.new("ふー")], {}), Tokens::Command.new(:think, [Tokens::String.new("ばー")], {})]) }
   example { Statement.parse('say --smile "ふー"').should == Tokens::Command.new(:say, [Tokens::String.new("ふー")], { :smile => true }) }
   example { Statement.parse('Pasberth say "ふー"').should == Tokens::Subject.new(:Pasberth, Tokens::Command.new(:say, [Tokens::String.new("ふー")], {})) }
 

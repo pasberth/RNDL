@@ -16,6 +16,7 @@ module Parsers
   KeywordArgument = apply Identifier, '=', proc { Expression }, &:join
   StringLiteral = between('"', '"', /(?:(?:\\\")|[^"])*/) { |str| Tokens::String.new str.to_s }
   PathLiteral = between('<', '>', /(?:(?:\\\")|[^\>])*/) { |path| Tokens::Path.new path.to_s }
+  DocumentLiteral = between(/\{\s*/, '}', many( proc { Statement } )) { |stats| Tokens::Document.new(stats) }
   RequiredArgument = apply proc { Expression }
   RequiredArguments = one_of(
       apply(RequiredArgument, SkipSpaces, proc { RequiredArguments }) { |a, _ss, as| a + as },
@@ -30,9 +31,10 @@ module Parsers
       Command,
       StringLiteral,
       PathLiteral,
+      DocumentLiteral,
       between('(', ')', proc { Expression })
   )
-  Statement = apply(Expression, /\n|.|$/) { |e, _e| e }
+  Statement = apply(SkipSpaces, Expression, SkipSpaces, /\n?/) { |_ss1, e, _ss2, _e| e }
   NDLParser = RegParsec::Regparser.new(Statement)
 end
 end

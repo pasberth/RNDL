@@ -3,4 +3,5 @@ module NDL::Syntax::Tokens
   String = Struct.new :str
   Path = Struct.new :path
   Subject = Struct.new :subject, :exp
+  Document = Struct.new :stats
 end
