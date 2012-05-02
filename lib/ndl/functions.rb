@@ -41,10 +41,6 @@ class NDL::Function
   def call
   end
 
-  def out output
-    raise NotImplementedError
-  end
-
   def as_text
     raise NotImplementedError
   end
