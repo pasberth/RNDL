@@ -1,0 +1,8 @@
+Pasberth = {
+  replace_all "$ME" "パスベルス"
+}
+Dollias = {
+  replace_all "$ME" "ドーリアス"
+}
+Pasberth say "$ME"
+Dollias say "$ME"

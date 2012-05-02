@@ -43,6 +43,7 @@ module NDL
       
       def call
         subject.permanents[@id] = @exp
+        @exp.call
       end
     end
     
