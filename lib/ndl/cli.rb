@@ -7,7 +7,7 @@ module NDL::CLI
     parameter "NAME", "the ndl file path", :attribute_name => :name
 
     def execute
-      puts NDL.load_file(name).map(&:as_text)
+      NDL.load_file(name).each &:out.with($stdout)
     end
   end
 end

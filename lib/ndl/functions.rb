@@ -68,7 +68,7 @@ module NDL
     class Puts < Function
 
       def out output
-        output.write self.as_text
+        output.write "%s\n" % self.as_text
       end
     end
 
