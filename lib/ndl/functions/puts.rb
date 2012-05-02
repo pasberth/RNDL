@@ -6,8 +6,8 @@ module NDL
 
     class Puts < Function
 
-      def out output
-        output.write "%s\n" % self.as_text
+      def call
+        subject.text << "%s\n" % self.as_text
       end
       
       def format text

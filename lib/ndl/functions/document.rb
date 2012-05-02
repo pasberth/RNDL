@@ -6,23 +6,21 @@ module NDL
     class Document
   
       def initialize *texts
-        @text = texts
-        texts.each { |a| a.subject = self }
+        @texts = texts
+        @texts.each { |a| a.subject = self }
       end
-
-      def out output
-        output.write "%s\n" % self.as_text
+      
+      def call
+        @texts.each &:call
+        nil
       end
       
       def text
-        as_text
+        @text ||= ''
       end
   
       def as_text
-        @text.map do |t|
-          t.call
-          t.as_text
-        end.join("\n")
+        text
       end
       
       def options

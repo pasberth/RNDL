@@ -8,7 +8,9 @@ module NDL::CLI
     parameter "NAME", "the ndl file path", :attribute_name => :name
 
     def execute
-      NDL.load_file(name).out($stdout)
+      doc = NDL.load_file(name)
+      doc.call
+      puts doc.text
     end
   end
 end
