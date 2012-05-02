@@ -18,72 +18,30 @@ class NDL::Function
     @text = try_convert_into_ndl_function! text
   end
   
+  def subject
+    @subject ||= ::NDL::Functions::Document.new
+  end
+  
+  def subject= sbj
+    @subject = sbj
+  end
+  
   def text
     @text.as_text
   end
+  
+  def call
+  end
 
   def out output
-    raise NoImplementedError
+    raise NotImplementedError
   end
 
   def as_text
-    raise NoImplementedError
+    raise NotImplementedError
   end
 end
 
-module NDL
-
-  module Functions
-
-    class String < Function
-      
-      def initialize text=""
-        @text = text
-      end
-
-      def text
-        as_text
-      end
-
-      def as_text
-        @text
-      end
-    end
-    
-    class Path < Function
-      
-      def initialize path
-        @text = path
-      end
-      
-      def text
-        as_text
-      end
-
-      def as_text
-        @body ||= open @text, &:read
-      end
-    end
-
-    class Puts < Function
-
-      def out output
-        output.write "%s\n" % self.as_text
-      end
-    end
-
-    class Say < Puts
-      
-      def as_text
-        "「#{text}」"
-      end
-    end
-    
-    class Think < Puts
-      
-      def as_text
-        "（#{text}）"
-      end
-    end
-  end
-end
+require 'ndl/functions/document'
+require 'ndl/functions/literals'
+require 'ndl/functions/puts'

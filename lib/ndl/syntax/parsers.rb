@@ -6,7 +6,7 @@ module NDL::Syntax
 module Parsers
   extend RegParsec::Regparsers
   
-  SkipSpaces = /\s*/
+  SkipSpaces = /((?!\n)\s)*/
   Identifier = /\w+/
   OptionalFlag = apply('--', Identifier) { |hyp, id|  [id.to_s.to_sym, true] }
   OptionalFlags = one_of(
@@ -18,17 +18,19 @@ module Parsers
   PathLiteral = between('<', '>', /(?:(?:\\\")|[^\>])*/) { |path| Tokens::Path.new path.to_s }
   RequiredArgument = apply proc { Expression }
   RequiredArguments = one_of(
-      apply(RequiredArgument, proc { RequiredArguments }) { |a, as| [a, *as] },
+      apply(RequiredArgument, SkipSpaces, proc { RequiredArguments }) { |a, _ss, as| a + as },
       RequiredArgument )
   Command = apply(Identifier, SkipSpaces, OptionalFlags, SkipSpaces, RequiredArguments) {
     |cmd, _ss1, opts, _ss2, args|
     Tokens::Command.new cmd.to_s.to_sym, args, Hash[*opts.flatten]
   }
+  SubjectCommand = try apply(Identifier, SkipSpaces, Command) { |sbj, _ss, cmd| Tokens::Subject.new sbj.to_s.to_sym, cmd }
   Expression = one_of(
+      SubjectCommand,
       Command,
       StringLiteral,
       PathLiteral,
-      between('(', ')', proc { Expression})
+      between('(', ')', proc { Expression })
   )
   Statement = apply(Expression, /\n|.|$/) { |e, _e| e }
   NDLParser = RegParsec::Regparser.new(Statement)

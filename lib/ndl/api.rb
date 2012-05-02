@@ -9,7 +9,7 @@ module NDL
 
     def load_file path
       open(path) do |f|
-        return ::NDL::Syntax::NDLParser.parse(f.read).map(&:build_token.in(self))
+        return Document.new(*NDLParser.parse(f.read).map(&:build_token.in(self)))
       end
     end
     
@@ -22,6 +22,8 @@ module NDL
             Functions::Say.new(*token.args.map(&:build_token.in(self)))
           when :think
             Functions::Think.new(*token.args.map(&:build_token.in(self)))
+          when :replace_all
+            Functions::ReplaceAll.new(*token.args.map(&:build_token.in(self)))
           else
             puts "unknown command '#{token.cmd}'"
           end
