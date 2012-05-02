@@ -18,6 +18,10 @@ module NDL
         text
       end
       
+      def text
+        args[0].as_text
+      end
+      
       def textf
         format text
       end
@@ -36,5 +40,8 @@ module NDL
         "（#{textf}）"
       end
     end
+    
+    define_ndl_function Say
+    define_ndl_function Think
   end
 end

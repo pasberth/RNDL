@@ -78,5 +78,7 @@ module NDL
         'TODO: Do the Functions::ReplaceAll return what.'
       end
     end
+    
+    define_ndl_function ReplaceAll
   end
 end

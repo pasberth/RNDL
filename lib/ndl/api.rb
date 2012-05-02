@@ -15,17 +15,15 @@ module NDL
     
     private
       def build_token token
+        return true if token == true
         case token
         when Tokens::Command
-          case token.cmd
-          when :say
-            Functions::Say.new(*token.args.map(&:build_token.in(self)))
-          when :think
-            Functions::Think.new(*token.args.map(&:build_token.in(self)))
-          when :replace_all
-            Functions::ReplaceAll.new(*token.args.map(&:build_token.in(self)))
+          if Functions.ndl_functions.key? token.cmd
+            f = Functions.ndl_functions[token.cmd].new(*token.args.map(&:build_token.in(self)))
+            f.options = Hash[*token.opts.map { |k, v| [k, build_token(v)] }.flatten]
+            f
           else
-            puts "unknown command '#{token.cmd}'"
+            raise "unknown command '#{token.cmd}'"
           end
         when Tokens::String
           Functions::String.new token.str
