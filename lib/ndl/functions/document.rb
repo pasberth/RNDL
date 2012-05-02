@@ -7,7 +7,7 @@ module NDL
   
       def initialize *texts
         @texts = texts
-        @texts.each { |a| a.subject = self }
+        @texts.each { |a| a.document = self; a.subject = self }
       end
       
       def call
@@ -23,6 +23,10 @@ module NDL
         text
       end
       
+      def permanents
+        @permanents ||= {}
+      end
+      
       def options
         @options ||= {}
       end
@@ -30,6 +34,33 @@ module NDL
 
     ::NDL::Document = Document
     
+    class Assign < Function
+
+      def initialize id, exp
+        @id = id
+        @exp = exp
+      end
+      
+      def call
+        subject.permanents[@id] = @exp
+      end
+    end
+    
+    class Subject < Function
+      
+      def initialize id, exp
+        @id = id
+        @exp = exp
+      end
+      
+      def call
+        sbj = subject.permanents[@id] or fail
+        @exp.document = self.document
+        @exp.subject = sbj
+        @exp.call
+      end
+    end
+
     class ReplaceAll < Function
       
       def initialize pattern, replacement

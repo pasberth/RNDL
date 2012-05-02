@@ -26,7 +26,12 @@ module Parsers
     Tokens::Command.new cmd.to_s.to_sym, args, Hash[*opts.flatten]
   }
   SubjectCommand = try apply(Identifier, SkipSpaces, Command) { |sbj, _ss, cmd| Tokens::Subject.new sbj.to_s.to_sym, cmd }
+  Assign = try apply(Identifier, SkipSpaces, '=', SkipSpaces, proc { Expression }) {
+    |id, _ss1, eq, _ss2, exp|
+    Tokens::Assignment.new(id.to_s.to_sym, exp)
+  }
   Expression = one_of(
+      Assign,
       SubjectCommand,
       Command,
       StringLiteral,

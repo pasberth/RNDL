@@ -18,8 +18,16 @@ class NDL::Function
     @text = try_convert_into_ndl_function! text
   end
   
+  def document
+    @document ||= ::NDL::Functions::Document.new 
+  end
+  
+  def document= doc
+    @document = doc
+  end
+
   def subject
-    @subject ||= ::NDL::Functions::Document.new
+    @subject ||= document
   end
   
   def subject= sbj

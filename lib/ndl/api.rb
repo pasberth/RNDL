@@ -33,6 +33,10 @@ module NDL
           Functions::Path.new token.path
         when Tokens::Document
           Functions::Document.new(*token.stats.map(&:build_token.in(self)))
+        when Tokens::Assignment
+          Functions::Assign.new(token.id, build_token(token.exp))
+        when Tokens::Subject
+          Functions::Subject.new(token.subject, build_token(token.exp))
         end
       end
   end

@@ -7,7 +7,7 @@ module NDL
     class Puts < Function
 
       def call
-        subject.text << "%s\n" % self.as_text
+        document.text << "%s\n" % self.as_text
       end
       
       def format text

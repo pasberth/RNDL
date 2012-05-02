@@ -4,4 +4,5 @@ module NDL::Syntax::Tokens
   Path = Struct.new :path
   Subject = Struct.new :subject, :exp
   Document = Struct.new :stats
+  Assignment = Struct.new :id, :exp
 end
