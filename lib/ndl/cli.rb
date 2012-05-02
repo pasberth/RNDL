@@ -1,3 +1,4 @@
+require 'give4each'
 require 'clamp'
 
 module NDL::CLI
