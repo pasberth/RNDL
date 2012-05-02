@@ -3,7 +3,7 @@ module NDL
   module Functions
 
 
-    class Document
+    class Document < Function
   
       def initialize *texts
         @texts = texts
@@ -16,7 +16,7 @@ module NDL
       end
       
       def text
-        @text ||= ''
+        @text or (@text = ''; call; @text)
       end
   
       def as_text

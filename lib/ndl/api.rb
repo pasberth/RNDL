@@ -31,6 +31,8 @@ module NDL
           Functions::String.new token.str
         when Tokens::Path
           Functions::Path.new token.path
+        when Tokens::Document
+          Functions::Document.new(*token.stats.map(&:build_token.in(self)))
         end
       end
   end

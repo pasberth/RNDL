@@ -9,7 +9,6 @@ module NDL::CLI
 
     def execute
       doc = NDL.load_file(name)
-      doc.call
       puts doc.text
     end
   end
